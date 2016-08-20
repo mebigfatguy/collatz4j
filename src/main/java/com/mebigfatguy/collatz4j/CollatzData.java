@@ -17,6 +17,15 @@
  */
 package com.mebigfatguy.collatz4j;
 
+import java.math.BigInteger;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class CollatzData {
 
+    private Map<BigInteger, BigInteger> relationships = new ConcurrentHashMap<>();
+
+    public void addRelationship(BigInteger from, BigInteger to) {
+        relationships.put(from, to);
+    }
 }

@@ -17,15 +17,62 @@
  */
 package com.mebigfatguy.collatz4j;
 
-public class CollatzGenerator implements TerminationListener {
+import java.math.BigInteger;
 
-    public CollatzGenerator(CollatzData data) {
+public class CollatzGenerator implements Runnable, TerminationListener {
+
+    private CollatzData data;
+    private Thread genThread;
+
+    public CollatzGenerator(CollatzData collatzData) {
+        data = collatzData;
     }
 
     @Override
     public void terminate() {
+        try {
+            genThread.interrupt();
+            genThread.join(10000);
+        } catch (InterruptedException e) {
+            // just ignore
+        } finally {
+            genThread = null;
+        }
     }
 
     public void generate() {
+        if (genThread != null) {
+            return;
+        }
+
+        genThread = new Thread(this);
+        genThread.setDaemon(true);
+        genThread.start();
+    }
+
+    @Override
+    public void run() {
+        BigInteger three = BigInteger.valueOf(3);
+
+        data.addRelationship(BigInteger.ONE, BigInteger.valueOf(4L));
+        data.addRelationship(BigInteger.valueOf(2L), BigInteger.ONE);
+        data.addRelationship(three, BigInteger.TEN);
+        data.addRelationship(BigInteger.valueOf(4L), BigInteger.valueOf(2L));
+
+        BigInteger nextValue = BigInteger.valueOf(5L);
+
+        while (!Thread.interrupted()) {
+            BigInteger to;
+
+            if (nextValue.testBit(0)) {
+                to = nextValue.multiply(three).add(BigInteger.ONE);
+            } else {
+                to = nextValue.shiftRight(1);
+            }
+
+            data.addRelationship(nextValue, to);
+
+            nextValue = nextValue.add(BigInteger.ONE);
+        }
     }
 }
