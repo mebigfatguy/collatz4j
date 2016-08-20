@@ -18,20 +18,29 @@
 package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class CollatzData implements Iterable<Map.Entry<BigInteger, ValueDetails>> {
+import com.google.common.util.concurrent.AtomicDoubleArray;
 
-    private Map<BigInteger, ValueDetails> relationships = new ConcurrentHashMap<>();
+public class ValueDetails {
 
-    public void addRelationship(BigInteger from, BigInteger to) {
-        relationships.put(from, new ValueDetails(to));
+    private AtomicDoubleArray location = new AtomicDoubleArray(3);
+    private BigInteger to;
+
+    public ValueDetails(BigInteger toValue) {
+        to = toValue;
     }
 
-    @Override
-    public Iterator<Map.Entry<BigInteger, ValueDetails>> iterator() {
-        return relationships.entrySet().iterator();
+    public void updateLocation(float x, float y, float z) {
+        location.set(0, x);
+        location.set(1, y);
+        location.set(2, z);
+    }
+
+    public AtomicDoubleArray getLocation() {
+        return location;
+    }
+
+    public BigInteger getTo() {
+        return to;
     }
 }

@@ -20,6 +20,7 @@
 		<pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar"/>
         <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}.jar"/>
+        <pathelement location="${lib.dir}/guava-${guava.version}.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-linux-amd64.jar"/>
         <pathelement location="${lib.dir}/natives-linux-i586/jogl-all-${jogl-all.version}-natives-linux-i586.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-macosx-universal.jar"/>
