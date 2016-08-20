@@ -13,27 +13,26 @@
 	<property name="javac.debug" value="on" />
 	<property name="proxy.server" value="" />
 	<property name="collatz4j.version" value="0.1.0" />
-
+	
 	<path id="collatz4j.classpath">
         <pathelement location="${classes.dir}"/>
-        <pathelement location="${conf.dir}"/>
 		<pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar"/>
 		<pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar"/>
         <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-linux-amd64.jar"/>
-        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-linux-i586.jar"/>
+        <pathelement location="${lib.dir}/natives-linux-i586/jogl-all-${jogl-all.version}-natives-linux-i586.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-macosx-universal.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-windows-amd64.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-windows-i586.jar"/>
         <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}.jar"/>
         <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-linux-amd64.jar"/>
-        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-linux-i586.jar"/>
+        <pathelement location="${lib.dir}/natives-linux-i586/gluegen-rt-${gluegen-rt.version}-natives-linux-i586.jar"/>
         <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-macosx-universal.jar"/>
         <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-windows-amd64.jar"/>
         <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-windows-i586.jar"/>
 	</path>
-	
+        	
     <target name="info">
         <echo message="Collatz4j - a visualization of the Collatz Conjecture"/>
         <echo message=""/>
@@ -44,11 +43,12 @@
 
 	<target name="yank" unless="no.yank" xmlns:yank="antlib:com.mebigfatguy.yank">
 		<mkdir dir="${lib.dir}"/>
-		<yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true">
+		<yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true" separateClassifierTypes="true">
 			<server url="http://repo1.maven.org/maven2"/>
+			<generateVersions propertyFileName="${basedir}/version.properties" />
 		</yank:yank>
 	</target>
-		
+	
 	<target name="init" depends="yank">
 		<mkdir dir="${classes.dir}"/>
 	</target>
