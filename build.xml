@@ -1,0 +1,94 @@
+<project name="collatz4j" default="jar" basedir=".">
+	<property file="user.properties" />
+    <property file="build.properties" />
+    <property file="version.properties" />
+	
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="target.dir" value="${basedir}/target"/>
+	<property name="classes.dir" value="${target.dir}/classes" />
+    <property name="lib.dir" value="${basedir}/lib" />
+	<property name="javac.source" value="1.8" />
+	<property name="javac.target" value="1.8" />
+	<property name="javac.deprecation" value="on" />
+	<property name="javac.debug" value="on" />
+	<property name="proxy.server" value="" />
+	<property name="collatz4j.version" value="0.1.0" />
+
+	<path id="collatz4j.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${conf.dir}"/>
+		<pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar"/>
+		<pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar"/>
+        <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar"/>
+        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}.jar"/>
+        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-linux-amd64.jar"/>
+        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-linux-i586.jar"/>
+        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-macosx-universal.jar"/>
+        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-windows-amd64.jar"/>
+        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-windows-i586.jar"/>
+        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}.jar"/>
+        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-linux-amd64.jar"/>
+        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-linux-i586.jar"/>
+        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-macosx-universal.jar"/>
+        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-windows-amd64.jar"/>
+        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-windows-i586.jar"/>
+	</path>
+	
+    <target name="info">
+        <echo message="Collatz4j - a visualization of the Collatz Conjecture"/>
+        <echo message=""/>
+        <echo message="    this project uses yank (https://github.com/mebigfatguy/yank) for dependency management"/>
+        <echo message="    download yank.jar and place in ant/lib directory"/>
+        <echo message="    http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.mebigfatguy.yank%22"/>
+    </target>
+
+	<target name="yank" unless="no.yank" xmlns:yank="antlib:com.mebigfatguy.yank">
+		<mkdir dir="${lib.dir}"/>
+		<yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true">
+			<server url="http://repo1.maven.org/maven2"/>
+		</yank:yank>
+	</target>
+		
+	<target name="init" depends="yank">
+		<mkdir dir="${classes.dir}"/>
+	</target>
+		
+	<target name="clean">
+		<delete dir="${target.dir}"/>
+	</target>
+		
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" source="${javac.source}" target="${javac.target}" deprecation="${javac.deprecation}" debug="${javac.debug}" includeantruntime="false">
+			<classpath refid="collatz4j.classpath" />
+		</javac>
+	</target>
+	
+	<target name="jar" depends="init,compile">
+		<jar destfile="${target.dir}/collatz4j-${collatz4j.version}.jar">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class" />
+			</fileset>
+			<manifest>
+				<attribute name="collatz4j-version" value="${collatz4j.version}" />
+				<attribute name="Main-Class" value="com.mebigfatguy.collatz4j.CollatzConjecture" />
+				<attribute name="Application-Name" value="collatz4j" />
+				<attribute name="Permissions" value="all-permissions" />
+				<attribute name="Codebase" value="*" />
+				<attribute name="Bundle-ManifestVersion" value="2" />
+				<attribute name="Bundle-Name" value="collatz4j" />
+				<attribute name="Bundle-SymbolicName" value="collatz4j; singleton:=true" />
+				<attribute name="Bundle-Version" value="${collatz4j.version}" />
+				<attribute name="Bundle-ClassPath" value="." />
+				<attribute name="Bundle-Vendor" value="collatz4j Project" />
+				<attribute name="Bundle-ActivationPolicy" value="lazy" />
+				<attribute name="Export-Package" value="com.mebigfatguy.collatz4j" />
+				<attribute name="Import-Package" value="org.slf4j, com.jogamp.newt, com.jogamp.opengl.util" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="run" depends="jar">
+		<java classname="com.mebigfatguy.collatz4j.CollatzConjecture" fork="true" classpathref="collatz4j.classpath">
+		</java>
+	</target>
+</project>
