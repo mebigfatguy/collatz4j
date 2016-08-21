@@ -37,7 +37,7 @@ public final class Sector {
 
     @Override
     public int hashCode() {
-        return (x << 18) ^ (y << 4) ^ z;
+        return (x << 8) ^ (y << 4) ^ z;
     }
 
     @Override
