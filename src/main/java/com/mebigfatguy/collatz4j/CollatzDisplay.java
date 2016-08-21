@@ -47,7 +47,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.AnimatorBase;
 
-public class CollatzDisplay {
+public final class CollatzDisplay {
 
     private static final float RADIUS = 6.378f;
     private static final int SLICES = 12;

@@ -17,7 +17,7 @@
  */
 package com.mebigfatguy.collatz4j;
 
-public class CollatzConjecture {
+public final class CollatzConjecture {
 
     public static void main(String[] args) {
 

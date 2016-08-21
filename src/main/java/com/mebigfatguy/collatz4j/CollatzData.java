@@ -18,20 +18,53 @@
 package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CollatzData implements Iterable<Map.Entry<BigInteger, ValueDetails>> {
+public final class CollatzData {
 
-    private Map<BigInteger, ValueDetails> relationships = new ConcurrentHashMap<>();
+    private static final float[] DEFAULT_LOCATION = new float[3];
+
+    private Map<CollatzValue, CollatzValue> relationships = new ConcurrentHashMap<>();
+    private Map<Sector, Set<CollatzValue>> universe = new ConcurrentHashMap<>();
 
     public void addRelationship(BigInteger from, BigInteger to) {
-        relationships.put(from, new ValueDetails(to));
+
+        CollatzValue fromCV = new CollatzValue(from);
+        CollatzValue toCV = new CollatzValue(to);
+
+        relationships.put(fromCV, toCV);
+
+        Sector fromSector = Sector.fromValue(DEFAULT_LOCATION);
+        Set<CollatzValue> values = universe.get(fromSector);
+        if (values == null) {
+            values = Collections.newSetFromMap(new ConcurrentHashMap<>());
+            universe.put(fromSector, values);
+        }
+        values.add(fromCV);
+
+        Sector toSector = Sector.fromValue(DEFAULT_LOCATION);
+        values = universe.get(toSector);
+        if (values == null) {
+            values = Collections.newSetFromMap(new ConcurrentHashMap<>());
+            universe.put(toSector, values);
+        }
+        values.add(toCV);
     }
 
-    @Override
-    public Iterator<Map.Entry<BigInteger, ValueDetails>> iterator() {
-        return relationships.entrySet().iterator();
+    public Iterator<CollatzValue> getSectorIterator(Sector sector) {
+        Set<CollatzValue> values = universe.get(sector);
+        if (values == null) {
+            return Collections.emptyIterator();
+        }
+
+        return values.iterator();
+    }
+
+    public CollatzValue getRelationship(CollatzValue value) {
+        return relationships.get(value);
     }
 }

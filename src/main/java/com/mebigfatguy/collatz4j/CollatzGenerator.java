@@ -19,7 +19,7 @@ package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
 
-public class CollatzGenerator implements Runnable, TerminationListener {
+public final class CollatzGenerator implements Runnable, TerminationListener {
 
     private CollatzData data;
     private Thread genThread;

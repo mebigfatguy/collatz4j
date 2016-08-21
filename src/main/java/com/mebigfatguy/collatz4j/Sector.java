@@ -17,30 +17,36 @@
  */
 package com.mebigfatguy.collatz4j;
 
-import java.math.BigInteger;
+public final class Sector {
 
-import com.google.common.util.concurrent.AtomicDoubleArray;
+    private static final int SECTOR_SIZE = 1000;
 
-public class ValueDetails {
+    private int x;
+    private int y;
+    private int z;
 
-    private AtomicDoubleArray location = new AtomicDoubleArray(3);
-    private BigInteger to;
-
-    public ValueDetails(BigInteger toValue) {
-        to = toValue;
+    private Sector(int sectorX, int sectorY, int sectorZ) {
+        x = sectorX;
+        y = sectorY;
+        z = sectorZ;
     }
 
-    public void updateLocation(float x, float y, float z) {
-        location.set(0, x);
-        location.set(1, y);
-        location.set(2, z);
+    public static Sector fromValue(float[] location) {
+        return new Sector((int) location[0] / SECTOR_SIZE, (int) location[1] / SECTOR_SIZE, (int) location[2] / SECTOR_SIZE);
     }
 
-    public AtomicDoubleArray getLocation() {
-        return location;
+    @Override
+    public int hashCode() {
+        return (x << 18) ^ (y << 4) ^ z;
     }
 
-    public BigInteger getTo() {
-        return to;
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Sector)) {
+            return false;
+        }
+
+        Sector that = (Sector) o;
+        return (x == that.x) && (y == that.y) && (z == that.z);
     }
 }
