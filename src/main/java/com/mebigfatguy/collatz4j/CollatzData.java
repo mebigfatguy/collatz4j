@@ -21,10 +21,11 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class CollatzData {
+public final class CollatzData implements Iterable<Map.Entry<CollatzValue, CollatzValue>> {
 
     private static final float[] DEFAULT_LOCATION = new float[3];
 
@@ -53,6 +54,11 @@ public final class CollatzData {
             universe.put(toSector, values);
         }
         values.add(toCV);
+    }
+
+    @Override
+    public Iterator<Entry<CollatzValue, CollatzValue>> iterator() {
+        return relationships.entrySet().iterator();
     }
 
     public Iterator<CollatzValue> getSectorIterator(Sector sector) {

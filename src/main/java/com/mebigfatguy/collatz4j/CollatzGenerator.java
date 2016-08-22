@@ -21,6 +21,7 @@ import java.math.BigInteger;
 
 public final class CollatzGenerator implements Runnable, TerminationListener {
 
+    private static final long GENERATION_TIME = 1000L;
     private CollatzData data;
     private Thread genThread;
 
@@ -47,6 +48,7 @@ public final class CollatzGenerator implements Runnable, TerminationListener {
 
         genThread = new Thread(this);
         genThread.setDaemon(true);
+        genThread.setPriority(Thread.MIN_PRIORITY);
         genThread.start();
     }
 
@@ -61,18 +63,24 @@ public final class CollatzGenerator implements Runnable, TerminationListener {
 
         BigInteger nextValue = BigInteger.valueOf(5L);
 
-        while (!Thread.interrupted()) {
-            BigInteger to;
+        try {
+            while (!Thread.interrupted()) {
+                BigInteger to;
 
-            if (nextValue.testBit(0)) {
-                to = nextValue.multiply(three).add(BigInteger.ONE);
-            } else {
-                to = nextValue.shiftRight(1);
+                Thread.sleep(GENERATION_TIME);
+
+                if (nextValue.testBit(0)) {
+                    to = nextValue.multiply(three).add(BigInteger.ONE);
+                } else {
+                    to = nextValue.shiftRight(1);
+                }
+
+                data.addRelationship(nextValue, to);
+
+                nextValue = nextValue.add(BigInteger.ONE);
             }
+        } catch (InterruptedException e) {
 
-            data.addRelationship(nextValue, to);
-
-            nextValue = nextValue.add(BigInteger.ONE);
         }
     }
 }

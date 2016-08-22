@@ -17,11 +17,13 @@
  */
 package com.mebigfatguy.collatz4j;
 
+import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,7 +36,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
-import javax.media.opengl.glu.GLUquadric;
 
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
@@ -46,12 +47,9 @@ import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.AnimatorBase;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 public final class CollatzDisplay {
-
-    private static final float RADIUS = 6.378f;
-    private static final int SLICES = 12;
-    private static final int STACKS = 12;
 
     private static final float[] ORIGIN = { 0.0f, 0.0f, 0.0f };
     private static final float STEP_SIZE = 10.0f;
@@ -65,10 +63,13 @@ public final class CollatzDisplay {
     private final Set<TerminationListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private GLWindow glWindow;
     private Animator animator;
-
+    private TextRenderer textRenderer;
     private float[] eyeLocation = { 0, 0, 500 };
 
-    public CollatzDisplay(CollatzData data) {
+    private CollatzData data;
+
+    public CollatzDisplay(CollatzData collatzData) {
+        data = collatzData;
     }
 
     public void addTerminationListener(TerminationListener terminationListener) {
@@ -138,10 +139,28 @@ public final class CollatzDisplay {
         return uv;
     }
 
+    void render(GLAutoDrawable drawable, GL2 gl, Map.Entry<CollatzValue, CollatzValue> entry) {
+        CollatzValue from = entry.getKey();
+        float[] fromLocation = from.getLocation();
+
+        CollatzValue to = entry.getValue();
+        float[] toLocation = to.getLocation();
+
+        try {
+            textRenderer.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+            textRenderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
+
+            textRenderer.draw3D(from.getValue().toString(), fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
+
+            textRenderer.draw3D(to.getValue().toString(), toLocation[0], toLocation[1], toLocation[2], 1.0f);
+        } finally {
+            textRenderer.endRendering();
+        }
+    }
+
     class CDEvents implements GLEventListener {
 
         private GLU glu;
-        private int sphereList;
 
         @Override
         public void display(GLAutoDrawable drawable) {
@@ -149,6 +168,9 @@ public final class CollatzDisplay {
 
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
+            for (Map.Entry<CollatzValue, CollatzValue> entry : data) {
+                render(drawable, gl, entry);
+            }
         }
 
         @Override
@@ -174,18 +196,7 @@ public final class CollatzDisplay {
             gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_DIFFUSE, DIFFUSE, 0);
             gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, LIGHT_POSITION, 0);
 
-            sphereList = gl.glGenLists(1);
-            gl.glNewList(sphereList, GL2.GL_COMPILE);
-
-            GLUquadric nodeGraphic = glu.gluNewQuadric();
-            glu.gluQuadricDrawStyle(nodeGraphic, GLU.GLU_FILL);
-            glu.gluQuadricNormals(nodeGraphic, GLU.GLU_SMOOTH);
-            glu.gluQuadricOrientation(nodeGraphic, GLU.GLU_OUTSIDE);
-
-            glu.gluSphere(nodeGraphic, RADIUS, SLICES, STACKS);
-            glu.gluDeleteQuadric(nodeGraphic);
-            gl.glEndList();
-
+            textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 24));
         }
 
         @Override

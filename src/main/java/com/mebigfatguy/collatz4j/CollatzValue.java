@@ -26,6 +26,7 @@ public final class CollatzValue {
 
     public CollatzValue(BigInteger v) {
         value = v;
+        float pos = Sector.SECTOR_SIZE / 2;
         location = new float[3];
     }
 

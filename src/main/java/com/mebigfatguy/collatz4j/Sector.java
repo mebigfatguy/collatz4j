@@ -19,7 +19,7 @@ package com.mebigfatguy.collatz4j;
 
 public final class Sector {
 
-    private static final int SECTOR_SIZE = 1000;
+    public static final int SECTOR_SIZE = 1000;
 
     private int x;
     private int y;
