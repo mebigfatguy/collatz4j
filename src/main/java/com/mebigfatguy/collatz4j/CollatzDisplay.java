@@ -64,6 +64,7 @@ public final class CollatzDisplay {
     private GLWindow glWindow;
     private Animator animator;
     private TextRenderer textRenderer;
+    private CollatzPositioner positioner;
     private float[] eyeLocation = { 0, 0, 500 };
 
     private CollatzData data;
@@ -107,6 +108,9 @@ public final class CollatzDisplay {
 
         glWindow.setVisible(true);
         animator.setUpdateFPSFrames(20, null);
+
+        positioner = new CollatzPositioner(data);
+        positioner.beginPositioning();
     }
 
     private static void centerWindow(GLWindow window) {
@@ -175,7 +179,7 @@ public final class CollatzDisplay {
 
         @Override
         public void dispose(GLAutoDrawable drawable) {
-            // do nothing
+            positioner.endPositioning();
         }
 
         @Override
