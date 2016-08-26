@@ -53,6 +53,12 @@ One usually draws graphs of these chains such as
                          
 As you can imagine as the numbers get larger, the 'limbs' of the tree can get quite long.
 
+A couple of points, that may not be immediately obvious.
+* The major limbs of the graph (the horizontal runs) are just multiples of two
+* Spurs, (the first node of a new limb) always start with an odd number
+* The graft points, where a limb attaches is always an even number
+* Except for the 1<-->4 cycle, there are no cycles, and each number is only represented in the tree once.
+
 This program attempts to draw a 3D visualization of this graph.
 
 For a good overview of the Collatz Conjecture, watch this [video](https://www.youtube.com/watch?v=5mFpVDpKX70).
