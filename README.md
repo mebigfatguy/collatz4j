@@ -15,10 +15,28 @@ One usually draws graphs of these chains such as
 
     >-----------v
     |           |
-    1 <-- 2 <-- 4 <-- 8 <-- 16
+    1 <-- 2 <-- 4 <-- 8 <-- 16 <-- 32
                              ^
                              |
-                             5 <-- 10 <-- 3
+                             5 <-- 10 <-- 3 <-- 6 <-- 12
+                                   ^
+                                   |
+                                   20 <-- 40
+                                          ^
+                                          |
+                                          13 <-- 26 <-- 52 <-- 104
+                                                        ^
+                                                        |
+                                                        17 <-- 34 <-- 68
+                                                               ^
+                                                               |
+                                                               11 <-- 22 <--44
+                                                                      ^
+                                                                      |
+                                                                      7 <-- 14 <-- 28 <--56
+                                                                                   ^
+                                                                                   |
+                                                                                   9 <-- 18
                          
 As you can imagine as the numbers get larger, the 'limbs' of the tree can get quite long.
 
