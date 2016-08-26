@@ -7,7 +7,7 @@ Given any positive whole number you use the following two rules
 * if the number is even, divide it by 2
 * if the number is odd, multiply by 3 and add 1
 
-With the resultant number repeat the process. The number may bounce around going higher or lower, but the Collatz Conjecture states that
+With the resultant number repeat the process. The chain of numbers may bounce around going higher or lower, but the Collatz Conjecture states that
 eventually *all* numbers will end up at 1. This has been tested up to numbers as high as 2^60. There is no proof, however, and Paul Erdős said about the Collatz conjecture: "Mathematics may not be ready for such problems." He offered $500 for its solution.
 
 One usually draws graphs of these chains such as
