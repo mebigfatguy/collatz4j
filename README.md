@@ -1,7 +1,7 @@
 # collatz4j
 ## A visualization of the Collatz Conjecture
 
-The [Collatz conjecture|https://en.wikipedia.org/wiki/Collatz_conjecture], also known as the Hailstone Conjecture, starts with what appears to be a silly math 'game'. 
+The [Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture), also known as the Hailstone Conjecture, starts with what appears to be a silly math 'game'. 
 Given any positive whole number you use the following two rules
 
 * if the number is even, divide it by 2
@@ -24,4 +24,4 @@ As you can imagine as the numbers get larger, the 'limbs' of the tree can get qu
 
 This program attempts to draw a 3D visualization of this graph.
 
-For a good overview of the Collatz Conjecture, watch this [video|https://www.youtube.com/watch?v=5mFpVDpKX70].
+For a good overview of the Collatz Conjecture, watch this [video[(https://www.youtube.com/watch?v=5mFpVDpKX70).
