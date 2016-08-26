@@ -19,9 +19,21 @@ One usually draws graphs of these chains such as
                              ^
                              |     3 <-- 6 <-- 12
                              |     |
-                             |     v
-                             5 <-- 10 <-- 20 <-- 40
-                                                 ^
+                             |     v                          
+                             5 <-- 10 <-- 20 <-- 40 <--80 <-- 160 <-- 320
+                                                 ^             ^
+                                                 |             |
+                                                 |             53 <-- 106 <-- 212
+                                                 |                     ^
+                                                 |                     |
+                                                 |                     35 <--70 <-- 140
+                                                 |                           ^
+                                                 |                           |
+                                                 |                           23 <--46 <-- 92
+                                                 |                                 ^
+                                                 |                                 |
+                                                 |                                 15 <-- 30 <-- 60
+                                                 |
                                                  |
                                                  13 <-- 26 <-- 52 <-- 104
                                                                ^
@@ -36,6 +48,8 @@ One usually draws graphs of these chains such as
                                                                                           ^
                                                                                           |
                                                                                           9 <-- 18
+                                                                                          
+                                                                                         160 53<-- 106<--35<--70<--23<--  46 <-- 15
 
                          
 As you can imagine as the numbers get larger, the 'limbs' of the tree can get quite long.
