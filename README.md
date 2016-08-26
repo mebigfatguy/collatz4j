@@ -24,4 +24,4 @@ As you can imagine as the numbers get larger, the 'limbs' of the tree can get qu
 
 This program attempts to draw a 3D visualization of this graph.
 
-For a good overview of the Collatz Conjecture, watch this [video[(https://www.youtube.com/watch?v=5mFpVDpKX70).
+For a good overview of the Collatz Conjecture, watch this [video](https://www.youtube.com/watch?v=5mFpVDpKX70).
