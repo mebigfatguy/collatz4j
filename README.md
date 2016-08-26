@@ -48,8 +48,7 @@ One usually draws graphs of these chains such as
                                                                                           ^
                                                                                           |
                                                                                           9 <-- 18
-                                                                                          
-                                                                                         160 53<-- 106<--35<--70<--23<--  46 <-- 15
+
 
                          
 As you can imagine as the numbers get larger, the 'limbs' of the tree can get quite long.
