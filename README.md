@@ -12,12 +12,12 @@ eventually *all* numbers will end up at 1. This has been tested up to numbers as
 One usually draws graphs of these chains such as
 
 
->-----------v
-|           |
-1 <-- 2 <-- 4 <-- 8 <-- 16
-                         ^
-                         |
-                         5 <-- 10 <-- 3
+    >-----------v
+    |           |
+    1 <-- 2 <-- 4 <-- 8 <-- 16
+                             ^
+                             |
+                             5 <-- 10 <-- 3
                          
 As you can imagine as the numbers get larger, the 'limbs' of the tree can get quite long.
 
