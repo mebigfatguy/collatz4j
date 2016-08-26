@@ -1,7 +1,7 @@
 # collatz4j
 ## A visualization of the Collatz Conjecture
 
-The Collatz conjecture starts with what appears to be a silly math 'game'. Given any postive whole number you use the following two rules
+The Collatz conjecture starts with what appears to be a silly math 'game'. Given any positive whole number you use the following two rules
 
 * if the number is even, divide it by 2
 * if the number is odd, multiply by 3 and add 1
