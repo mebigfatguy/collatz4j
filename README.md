@@ -1,5 +1,5 @@
-== collatz4j
-=== A visualization of the Collatz Conjecture
+# collatz4j
+## A visualization of the Collatz Conjecture
 
 The Collatz conjecture starts with what appears to be a silly math 'game'. Given any postive whole number you use the following two rules
 
@@ -7,7 +7,7 @@ The Collatz conjecture starts with what appears to be a silly math 'game'. Given
 * if the number is odd, multiply by 3 and add 1
 
 With the resultant number repeat the process. The number may bounce around going higher or lower, but the Collatz Conjecture states that
-eventually _all_ numbers will end up at 1. This has been tested up to numbers as high as 2^60.
+eventually *all* numbers will end up at 1. This has been tested up to numbers as high as 2^60.
 
 One usually draws graphs of these chains such as
 
