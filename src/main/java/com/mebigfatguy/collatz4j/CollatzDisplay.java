@@ -133,14 +133,14 @@ public final class CollatzDisplay {
         float[] toLocation = to.getLocation();
 
         try {
-            textRenderer.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+            textRenderer.begin3DRendering();
             textRenderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
 
             textRenderer.draw3D(from.getValue().toString(), fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
 
             textRenderer.draw3D(to.getValue().toString(), toLocation[0], toLocation[1], toLocation[2], 1.0f);
         } finally {
-            textRenderer.endRendering();
+            textRenderer.end3DRendering();
         }
     }
 

@@ -67,14 +67,16 @@ public class CollatzPositioner implements Runnable {
     public void run() {
         while (!Thread.interrupted()) {
             for (CollatzValue from : data.getRandomSector()) {
-                float[] fromLocation = from.getLocation();
                 CollatzValue to = data.getRelationship(from);
-                float[] toLocation = to.getLocation();
+                if (to != null) {
+                    float[] fromLocation = from.getLocation();
+                    float[] toLocation = to.getLocation();
 
-                if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                    repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
-                } else if (isFarAwayFrom(fromLocation, toLocation)) {
-                    attract(fromLocation, toLocation);
+                    if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                        repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
+                    } else if (isFarAwayFrom(fromLocation, toLocation)) {
+                        attract(fromLocation, toLocation);
+                    }
                 }
             }
         }
