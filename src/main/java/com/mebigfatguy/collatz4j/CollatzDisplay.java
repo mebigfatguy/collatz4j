@@ -133,8 +133,14 @@ public final class CollatzDisplay {
         float[] toLocation = to.getLocation();
 
         try {
+            gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
+            gl.glBegin(GL2.GL_LINES);
+            gl.glVertex3fv(fromLocation, 0);
+            gl.glVertex3fv(toLocation, 0);
+            gl.glEnd();
+
             textRenderer.begin3DRendering();
-            textRenderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
+            textRenderer.setColor(1.0f, 0.2f, 0.2f, 1.0f);
 
             textRenderer.draw3D(from.getValue().toString(), fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
 
@@ -153,6 +159,7 @@ public final class CollatzDisplay {
             GL2 gl = drawable.getGL().getGL2();
 
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            gl.glEnable(GL.GL_BLEND);
 
             for (Map.Entry<CollatzValue, CollatzValue> entry : data) {
                 render(drawable, gl, entry);

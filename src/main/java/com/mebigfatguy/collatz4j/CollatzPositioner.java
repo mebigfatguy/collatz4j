@@ -19,7 +19,7 @@ package com.mebigfatguy.collatz4j;
 
 public class CollatzPositioner implements Runnable {
 
-    private static final float RADIUS = 10.0f;
+    private static final float RADIUS = 18.0f;
 
     private static final float LONG_REPEL_DISTANCE = RADIUS * 8.0f;
     private static final float LONG_REPEL_DISTANCE_SQUARED = LONG_REPEL_DISTANCE * LONG_REPEL_DISTANCE;
