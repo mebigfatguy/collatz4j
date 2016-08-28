@@ -30,12 +30,6 @@ public final class CollatzValue {
         location = new float[3];
     }
 
-    public void updateLocation(float x, float y, float z) {
-        location[0] = x;
-        location[1] = y;
-        location[2] = z;
-    }
-
     public float[] getLocation() {
         return location;
     }

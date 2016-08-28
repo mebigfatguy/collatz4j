@@ -125,24 +125,6 @@ public final class CollatzDisplay {
         window.setPosition((screenBounds.width - w) / 2, (screenBounds.height - h) / 3);
     }
 
-    private static float[] unitVector(float[] pos1, float[] pos2) {
-        float[] uv = { pos2[0] - pos1[0], pos2[1] - pos1[1], pos2[2] - pos1[2] };
-        float denom = (float) Math.sqrt((uv[0] * uv[0]) + (uv[1] * uv[1]) + (uv[2] * uv[2]));
-
-        if (denom == 0.0f) {
-            uv[0] = (float) ((Math.random() * 10.0) - 5.0);
-            uv[1] = (float) ((Math.random() * 10.0) - 5.0);
-            uv[2] = (float) ((Math.random() * 10.0) - 5.0);
-            denom = (float) Math.sqrt((uv[0] * uv[0]) + (uv[1] * uv[1]) + (uv[2] * uv[2]));
-        }
-
-        uv[0] /= denom;
-        uv[1] /= denom;
-        uv[2] /= denom;
-
-        return uv;
-    }
-
     void render(GLAutoDrawable drawable, GL2 gl, Map.Entry<CollatzValue, CollatzValue> entry) {
         CollatzValue from = entry.getKey();
         float[] fromLocation = from.getLocation();
@@ -235,13 +217,13 @@ public final class CollatzDisplay {
 
                 int keyCode = e.getKeyCode();
                 if (keyCode == KeyEvent.VK_UP) {
-                    float[] uv = unitVector(ORIGIN, eyeLocation);
+                    float[] uv = CollatzPositioner.unitVector(ORIGIN, eyeLocation);
                     for (int i = 0; i < 3; ++i) {
                         uv[i] *= STEP_SIZE;
                         eyeLocation[i] -= uv[i];
                     }
                 } else if (keyCode == KeyEvent.VK_DOWN) {
-                    float[] uv = unitVector(ORIGIN, eyeLocation);
+                    float[] uv = CollatzPositioner.unitVector(ORIGIN, eyeLocation);
                     for (int i = 0; i < 3; ++i) {
                         uv[i] *= STEP_SIZE;
                         eyeLocation[i] += uv[i];

@@ -22,13 +22,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class CollatzData implements Iterable<Map.Entry<CollatzValue, CollatzValue>> {
 
     private static final float[] DEFAULT_LOCATION = new float[3];
-
+    private Queue<Sector> sectors = new ConcurrentLinkedQueue<>();
     private Map<CollatzValue, CollatzValue> relationships = new ConcurrentHashMap<>();
     private Map<Sector, Set<CollatzValue>> universe = new ConcurrentHashMap<>();
 
@@ -44,6 +46,7 @@ public final class CollatzData implements Iterable<Map.Entry<CollatzValue, Colla
         if (values == null) {
             values = Collections.newSetFromMap(new ConcurrentHashMap<>());
             universe.put(fromSector, values);
+            sectors.add(fromSector);
         }
         values.add(fromCV);
 
@@ -52,6 +55,7 @@ public final class CollatzData implements Iterable<Map.Entry<CollatzValue, Colla
         if (values == null) {
             values = Collections.newSetFromMap(new ConcurrentHashMap<>());
             universe.put(toSector, values);
+            sectors.add(toSector);
         }
         values.add(toCV);
     }
@@ -61,13 +65,25 @@ public final class CollatzData implements Iterable<Map.Entry<CollatzValue, Colla
         return relationships.entrySet().iterator();
     }
 
-    public Iterator<CollatzValue> getSectorIterator(Sector sector) {
-        Set<CollatzValue> values = universe.get(sector);
-        if (values == null) {
-            return Collections.emptyIterator();
+    /**
+     * figure out what to do about sectors race condition
+     *
+     * @return
+     */
+    public Set<CollatzValue> getRandomSector() {
+        if (sectors.isEmpty()) {
+            return Collections.emptySet();
         }
 
-        return values.iterator();
+        Sector sector = sectors.remove();
+        sectors.add(sector);
+
+        Set<CollatzValue> values = universe.get(sector);
+        if (values == null) {
+            return Collections.emptySet();
+        }
+
+        return values;
     }
 
     public CollatzValue getRelationship(CollatzValue value) {

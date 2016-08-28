@@ -19,6 +19,17 @@ package com.mebigfatguy.collatz4j;
 
 public class CollatzPositioner implements Runnable {
 
+    private static final float RADIUS = 10.0f;
+
+    private static final float LONG_REPEL_DISTANCE = RADIUS * 8.0f;
+    private static final float LONG_REPEL_DISTANCE_SQUARED = LONG_REPEL_DISTANCE * LONG_REPEL_DISTANCE;
+
+    private static final float SHORT_REPEL_DISTANCE = RADIUS * 3.0f;
+    private static final float SHORT_REPEL_DISTANCE_SQUARED = SHORT_REPEL_DISTANCE * SHORT_REPEL_DISTANCE;
+
+    private static final float ATTRACTION_DISTANCE = RADIUS * 4.0f;
+    private static final float ATTRACTION_DISTANCE_SQUARED = ATTRACTION_DISTANCE * ATTRACTION_DISTANCE;
+
     private CollatzData data;
     private Thread positionerThread;
 
@@ -55,7 +66,74 @@ public class CollatzPositioner implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
+            for (CollatzValue from : data.getRandomSector()) {
+                float[] fromLocation = from.getLocation();
+                CollatzValue to = data.getRelationship(from);
+                float[] toLocation = to.getLocation();
 
+                if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                    repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
+                } else if (isFarAwayFrom(fromLocation, toLocation)) {
+                    attract(fromLocation, toLocation);
+                }
+            }
         }
+    }
+
+    private static boolean isCloseTo(float[] fromLocation, float[] toLocation, float distance) {
+        float distanceSq = distanceSquared(fromLocation, toLocation);
+        return distanceSq < distance;
+    }
+
+    public static float[] unitVector(float[] fromLocation, float[] toLocation) {
+        float[] uv = { toLocation[0] - fromLocation[0], toLocation[1] - fromLocation[1], toLocation[2] - fromLocation[2] };
+        float denom = (float) Math.sqrt((uv[0] * uv[0]) + (uv[1] * uv[1]) + (uv[2] * uv[2]));
+
+        if (denom == 0.0f) {
+            uv[0] = (float) ((Math.random() * 10.0) - 5.0);
+            uv[1] = (float) ((Math.random() * 10.0) - 5.0);
+            uv[2] = (float) ((Math.random() * 10.0) - 5.0);
+            denom = (float) Math.sqrt((uv[0] * uv[0]) + (uv[1] * uv[1]) + (uv[2] * uv[2]));
+        }
+
+        uv[0] /= denom;
+        uv[1] /= denom;
+        uv[2] /= denom;
+
+        return uv;
+    }
+
+    private static void repel(float[] fromLocation, float[] toLocation, float repelSpeed) {
+
+        float[] uv = unitVector(fromLocation, toLocation);
+
+        for (int i = 0; i < 3; ++i) {
+            fromLocation[i] += -repelSpeed * uv[i];
+            toLocation[i] += +repelSpeed * uv[i];
+        }
+    }
+
+    private void attract(float[] fromLocation, float[] toLocation) {
+
+        float[] uv = unitVector(fromLocation, toLocation);
+
+        for (int i = 0; i < 3; ++i) {
+            fromLocation[i] += 0.5 * uv[i];
+            toLocation[i] += -0.5 * uv[i];
+        }
+    }
+
+    private static boolean isFarAwayFrom(float[] fromLocation, float[] toLocation) {
+
+        float distanceSq = distanceSquared(fromLocation, toLocation);
+        return distanceSq > ATTRACTION_DISTANCE_SQUARED;
+    }
+
+    private static float distanceSquared(float[] pos1, float[] pos2) {
+        float x = pos1[0] - pos2[0];
+        float y = pos1[1] - pos2[1];
+        float z = pos1[2] - pos2[2];
+
+        return (x * x) + (y * y) + (z * z);
     }
 }
