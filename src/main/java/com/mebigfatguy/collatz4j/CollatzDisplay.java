@@ -182,7 +182,7 @@ public final class CollatzDisplay {
             gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_DIFFUSE, DIFFUSE, 0);
             gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, LIGHT_POSITION, 0);
 
-            textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 24));
+            textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
         }
 
         @Override

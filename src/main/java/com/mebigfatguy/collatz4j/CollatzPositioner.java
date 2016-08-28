@@ -44,7 +44,7 @@ public class CollatzPositioner implements Runnable {
 
         positionerThread = new Thread(this);
         positionerThread.setDaemon(true);
-        positionerThread.setPriority(Thread.MIN_PRIORITY);
+        positionerThread.setPriority(Thread.MIN_PRIORITY + 1);
         positionerThread.start();
     }
 
