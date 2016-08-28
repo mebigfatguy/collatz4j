@@ -54,9 +54,8 @@ One usually draws graphs of these chains such as
 As you can imagine as the numbers get larger, the 'limbs' of the tree can get quite long.
 
 A couple of points, that may not be immediately obvious.
-* The major limbs of the graph (the horizontal runs) are just multiples of two
-* Spurs, (the first node of a new limb) always start with an odd number
-* The graft points, where a limb attaches is always an even number
+* Every limb, starts with an odd value, then continues on with all even values
+* The graft points, where a limb attaches is always an even number (ie, no two limbs start at the same point)
 * Except for the 1<-->4 cycle, there are no cycles.
 
 This program attempts to draw a 3D visualization of this graph.
