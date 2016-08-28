@@ -133,8 +133,8 @@ public final class CollatzDisplay {
         float[] toLocation = to.getLocation();
 
         try {
-            gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
             gl.glBegin(GL2.GL_LINES);
+            gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
             gl.glVertex3fv(fromLocation, 0);
             gl.glVertex3fv(toLocation, 0);
             gl.glEnd();
