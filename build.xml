@@ -21,17 +21,17 @@
         <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar"/>
         <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}.jar"/>
         <pathelement location="${lib.dir}/guava-${guava.version}.jar"/>
-        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-linux-amd64.jar"/>
+        <pathelement location="${lib.dir}/natives-linux-amd64/jogl-all-${jogl-all.version}-natives-linux-amd64.jar"/>
         <pathelement location="${lib.dir}/natives-linux-i586/jogl-all-${jogl-all.version}-natives-linux-i586.jar"/>
-        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-macosx-universal.jar"/>
-        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-windows-amd64.jar"/>
-        <pathelement location="${lib.dir}/jogl-all-${jogl-all.version}-natives-windows-i586.jar"/>
+        <pathelement location="${lib.dir}/natives-macosx-universal/jogl-all-${jogl-all.version}-natives-macosx-universal.jar"/>
+        <pathelement location="${lib.dir}/natives-windows-amd64/jogl-all-${jogl-all.version}-natives-windows-amd64.jar"/>
+        <pathelement location="${lib.dir}/natives-windows-i586/jogl-all-${jogl-all.version}-natives-windows-i586.jar"/>
         <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}.jar"/>
-        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-linux-amd64.jar"/>
+        <pathelement location="${lib.dir}/natives-linux-amd64/gluegen-rt-${gluegen-rt.version}-natives-linux-amd64.jar"/>
         <pathelement location="${lib.dir}/natives-linux-i586/gluegen-rt-${gluegen-rt.version}-natives-linux-i586.jar"/>
-        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-macosx-universal.jar"/>
-        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-windows-amd64.jar"/>
-        <pathelement location="${lib.dir}/gluegen-rt-${gluegen-rt.version}-natives-windows-i586.jar"/>
+        <pathelement location="${lib.dir}/natives-macosx-universal/gluegen-rt-${gluegen-rt.version}-natives-macosx-universal.jar"/>
+        <pathelement location="${lib.dir}/natives-windows-amd64/gluegen-rt-${gluegen-rt.version}-natives-windows-amd64.jar"/>
+        <pathelement location="${lib.dir}/natives-windows-i586/gluegen-rt-${gluegen-rt.version}-natives-windows-i586.jar"/>
 	</path>
         	
     <target name="info">
