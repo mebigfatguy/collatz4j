@@ -17,6 +17,9 @@
  */
 package com.mebigfatguy.collatz4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CollatzPositioner implements Runnable {
 
     private static final float RADIUS = 18.0f;
@@ -66,16 +69,32 @@ public class CollatzPositioner implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            for (CollatzValue from : data.getRandomSector()) {
+            List<CollatzValue> sectorValues = new ArrayList<>(data.getRandomSector());
+            for (int i = 0; i < sectorValues.size(); i++) {
+                CollatzValue from = sectorValues.get(i);
+                float[] fromLocation = from.getLocation();
+
                 CollatzValue to = data.getRelationship(from);
                 if (to != null) {
-                    float[] fromLocation = from.getLocation();
                     float[] toLocation = to.getLocation();
 
                     if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
                         repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
                     } else if (isFarAwayFrom(fromLocation, toLocation)) {
                         attract(fromLocation, toLocation);
+                    }
+                }
+
+                for (int j = i + 1; j < sectorValues.size(); j++) {
+                    CollatzValue other = sectorValues.get(j);
+
+                    if ((to == null) || !other.getValue().equals(to.getValue())) {
+                        float[] otherLocation = other.getLocation();
+                        float distance = distanceSquared(fromLocation, otherLocation);
+                        if (distance < LONG_REPEL_DISTANCE_SQUARED) {
+                            float repelDistance = (float) (Math.sqrt(LONG_REPEL_DISTANCE_SQUARED - distance) / 3);
+                            repel(fromLocation, otherLocation, repelDistance);
+                        }
                     }
                 }
             }
