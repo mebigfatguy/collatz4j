@@ -18,75 +18,29 @@
 package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class CollatzData implements Iterable<Map.Entry<CollatzValue, CollatzValue>> {
 
-    private static final float[] DEFAULT_LOCATION = new float[3];
-    private Queue<Sector> sectors = new ConcurrentLinkedQueue<>();
-    private Map<CollatzValue, CollatzValue> relationships = new ConcurrentHashMap<>();
-    private Map<Sector, Set<CollatzValue>> universe = new ConcurrentHashMap<>();
+    private Map<CollatzValue, CollatzValue> universe = new ConcurrentHashMap<>();
 
     public void addRelationship(BigInteger from, BigInteger to) {
 
         CollatzValue fromCV = new CollatzValue(from);
         CollatzValue toCV = new CollatzValue(to);
-
-        relationships.put(fromCV, toCV);
-
-        Sector fromSector = Sector.fromValue(DEFAULT_LOCATION);
-        Set<CollatzValue> values = universe.get(fromSector);
-        if (values == null) {
-            values = Collections.newSetFromMap(new ConcurrentHashMap<>());
-            universe.put(fromSector, values);
-            sectors.add(fromSector);
+        if (fromCV.isOdd()) {
+            toCV.setOddValue(fromCV);
+        } else {
+            toCV.setEvenValue(fromCV);
         }
-        values.add(fromCV);
 
-        Sector toSector = Sector.fromValue(DEFAULT_LOCATION);
-        values = universe.get(toSector);
-        if (values == null) {
-            values = Collections.newSetFromMap(new ConcurrentHashMap<>());
-            universe.put(toSector, values);
-            sectors.add(toSector);
-        }
-        values.add(toCV);
+        universe.put(fromCV, toCV);
     }
 
     @Override
-    public Iterator<Entry<CollatzValue, CollatzValue>> iterator() {
-        return relationships.entrySet().iterator();
-    }
-
-    /**
-     * figure out what to do about sectors race condition
-     *
-     * @return
-     */
-    public Set<CollatzValue> getRandomSector() {
-        if (sectors.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        Sector sector = sectors.remove();
-        sectors.add(sector);
-
-        Set<CollatzValue> values = universe.get(sector);
-        if (values == null) {
-            return Collections.emptySet();
-        }
-
-        return values;
-    }
-
-    public CollatzValue getRelationship(CollatzValue value) {
-        return relationships.get(value);
+    public Iterator<Map.Entry<CollatzValue, CollatzValue>> iterator() {
+        return universe.entrySet().iterator();
     }
 }

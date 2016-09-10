@@ -22,6 +22,8 @@ import java.math.BigInteger;
 public final class CollatzValue {
 
     private BigInteger value;
+    private CollatzValue oddValue;
+    private CollatzValue evenValue;
     private float[] location;
 
     public CollatzValue(BigInteger v) {
@@ -30,12 +32,32 @@ public final class CollatzValue {
         location = new float[3];
     }
 
+    public CollatzValue getOddValue() {
+        return oddValue;
+    }
+
+    public void setOddValue(CollatzValue oddValue) {
+        this.oddValue = oddValue;
+    }
+
+    public CollatzValue getEvenValue() {
+        return evenValue;
+    }
+
+    public void setEvenValue(CollatzValue evenValue) {
+        this.evenValue = evenValue;
+    }
+
     public float[] getLocation() {
         return location;
     }
 
     public BigInteger getValue() {
         return value;
+    }
+
+    public boolean isOdd() {
+        return value.testBit(0);
     }
 
     @Override

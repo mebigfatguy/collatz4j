@@ -17,8 +17,7 @@
  */
 package com.mebigfatguy.collatz4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class CollatzPositioner implements Runnable {
 
@@ -69,32 +68,23 @@ public class CollatzPositioner implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            List<CollatzValue> sectorValues = new ArrayList<>(data.getRandomSector());
-            for (int i = 0; i < sectorValues.size(); i++) {
-                CollatzValue from = sectorValues.get(i);
-                float[] fromLocation = from.getLocation();
+            for (Map.Entry<CollatzValue, CollatzValue> entry : data) {
 
-                CollatzValue to = data.getRelationship(from);
-                if (to != null) {
-                    float[] toLocation = to.getLocation();
+                CollatzValue fromCV = entry.getKey();
+                float[] fromLocation = fromCV.getLocation();
+                float[] toLocation = entry.getValue().getLocation();
 
-                    if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                        repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
-                    } else if (isFarAwayFrom(fromLocation, toLocation)) {
-                        attract(fromLocation, toLocation);
-                    }
+                if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                    repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
+                } else if (isFarAwayFrom(fromLocation, toLocation)) {
+                    attract(fromLocation, toLocation);
                 }
 
-                for (int j = i + 1; j < sectorValues.size(); j++) {
-                    CollatzValue other = sectorValues.get(j);
-
-                    if ((to == null) || !other.getValue().equals(to.getValue())) {
-                        float[] otherLocation = other.getLocation();
-                        float distance = distanceSquared(fromLocation, otherLocation);
-                        if (distance < LONG_REPEL_DISTANCE_SQUARED) {
-                            float repelDistance = (float) (Math.sqrt(LONG_REPEL_DISTANCE_SQUARED - distance) / 3);
-                            repel(fromLocation, otherLocation, repelDistance);
-                        }
+                CollatzValue oddValue = fromCV.getOddValue();
+                if (oddValue != null) {
+                    float[] oddLocation = oddValue.getLocation();
+                    if (isCloseTo(fromLocation, oddLocation, LONG_REPEL_DISTANCE_SQUARED)) {
+                        repel(fromLocation, oddLocation, LONG_REPEL_DISTANCE / 3);
                     }
                 }
             }
