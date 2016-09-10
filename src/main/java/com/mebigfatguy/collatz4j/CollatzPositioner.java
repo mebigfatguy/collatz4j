@@ -17,8 +17,12 @@
  */
 package com.mebigfatguy.collatz4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CollatzPositioner implements Runnable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollatzPositioner.class);
     private static final float RADIUS = 18.0f;
 
     private static final float LONG_REPEL_DISTANCE = RADIUS * 8.0f;
@@ -29,6 +33,9 @@ public class CollatzPositioner implements Runnable {
 
     private static final float ATTRACTION_DISTANCE = RADIUS * 4.0f;
     private static final float ATTRACTION_DISTANCE_SQUARED = ATTRACTION_DISTANCE * ATTRACTION_DISTANCE;
+
+    private static final float REPEL_MOVEMENT = 5.0f;
+    private static final float ATTRACTION_MOVEMENT = 0.5f;
 
     private CollatzData data;
     private Thread positionerThread;
@@ -65,33 +72,37 @@ public class CollatzPositioner implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.interrupted()) {
-            for (Pair<CollatzValue, CollatzValue> fromTo : data) {
+        try {
+            while (!Thread.interrupted()) {
+                for (Pair<CollatzValue, CollatzValue> fromTo : data) {
 
-                CollatzValue fromCV = fromTo.getKey();
-                float[] fromLocation = fromCV.getLocation();
+                    CollatzValue fromCV = fromTo.getKey();
+                    float[] fromLocation = fromCV.getLocation();
 
-                CollatzValue toCV = fromTo.getValue();
-                if (toCV != null) {
-                    float[] toLocation = toCV.getLocation();
+                    CollatzValue toCV = fromTo.getValue();
+                    if (toCV != null) {
+                        float[] toLocation = toCV.getLocation();
 
-                    if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                        repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
-                    } else if (isFarAwayFrom(fromLocation, toLocation)) {
-                        attract(fromLocation, toLocation);
+                        if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                            repel(fromLocation, toLocation, REPEL_MOVEMENT);
+                        } else if (isFarAwayFrom(fromLocation, toLocation)) {
+                            attract(fromLocation, toLocation, ATTRACTION_MOVEMENT);
+                        }
                     }
-                }
 
-                CollatzValue oddValue = fromCV.getOddValueNode();
-                if (oddValue != null) {
-                    float[] oddLocation = oddValue.getLocation();
-                    float distance = distanceSquared(fromLocation, oddLocation);
-                    if (distance < LONG_REPEL_DISTANCE_SQUARED) {
-                        float repelDistance = (float) (Math.sqrt(LONG_REPEL_DISTANCE_SQUARED - distance) / 3);
-                        repel(fromLocation, oddLocation, repelDistance);
+                    CollatzValue oddValue = fromCV.getOddValueNode();
+                    if (oddValue != null) {
+                        float[] oddLocation = oddValue.getLocation();
+                        if (isCloseTo(fromLocation, oddLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                            repel(fromLocation, oddLocation, REPEL_MOVEMENT);
+                        } else if (isFarAwayFrom(fromLocation, oddLocation)) {
+                            attract(fromLocation, oddLocation, ATTRACTION_MOVEMENT);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            LOGGER.error("CollatzPositioner has exited", e);
         }
     }
 
@@ -123,18 +134,20 @@ public class CollatzPositioner implements Runnable {
         float[] uv = unitVector(fromLocation, toLocation);
 
         for (int i = 0; i < 3; ++i) {
-            fromLocation[i] += -repelSpeed * uv[i];
-            toLocation[i] += +repelSpeed * uv[i];
+            float adjust = repelSpeed * uv[i];
+            fromLocation[i] -= adjust;
+            toLocation[i] += adjust;
         }
     }
 
-    private void attract(float[] fromLocation, float[] toLocation) {
+    private void attract(float[] fromLocation, float[] toLocation, float attractSpeed) {
 
         float[] uv = unitVector(fromLocation, toLocation);
 
         for (int i = 0; i < 3; ++i) {
-            fromLocation[i] += 0.5 * uv[i];
-            toLocation[i] += -0.5 * uv[i];
+            float adjust = attractSpeed * uv[i];
+            fromLocation[i] += adjust;
+            toLocation[i] -= adjust;
         }
     }
 
