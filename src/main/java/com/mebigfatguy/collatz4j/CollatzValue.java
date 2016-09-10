@@ -32,7 +32,6 @@ public final class CollatzValue {
 
     public CollatzValue(BigInteger v) {
         value = v;
-        float pos = Sector.SECTOR_SIZE / 2;
         location = new float[] { RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10 };
     }
 
