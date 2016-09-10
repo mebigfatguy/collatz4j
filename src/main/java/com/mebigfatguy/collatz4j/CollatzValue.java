@@ -19,8 +19,11 @@ package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Random;
 
 public final class CollatzValue {
+
+    private static final Random RANDOM = new Random();
 
     private BigInteger value;
     private CollatzValue oddValueName;
@@ -30,7 +33,7 @@ public final class CollatzValue {
     public CollatzValue(BigInteger v) {
         value = v;
         float pos = Sector.SECTOR_SIZE / 2;
-        location = new float[3];
+        location = new float[] { RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10 };
     }
 
     public CollatzValue getOddValueNode() {
