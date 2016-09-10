@@ -21,7 +21,7 @@ import java.math.BigInteger;
 
 public final class CollatzGenerator implements Runnable, TerminationListener {
 
-    private static final long GENERATION_TIME = 100L;
+    private static final long GENERATION_TIME = 1000L;
     private CollatzData data;
     private Thread genThread;
 

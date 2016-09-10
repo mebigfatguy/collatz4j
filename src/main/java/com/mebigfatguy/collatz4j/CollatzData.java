@@ -26,15 +26,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzValue>> {
 
-    private static BigInteger TWO = new BigInteger("2", 10);
+    private static BigInteger TWO = BigInteger.valueOf(2L);
 
     private Map<BigInteger, CollatzValue> reverseLookup = new ConcurrentHashMap<>();
     private Map<CollatzValue, CollatzValue> universe = new ConcurrentHashMap<>();
     private CollatzValue root;
+    private BigInteger randomValue;
 
     public CollatzData() {
         root = new CollatzValue(BigInteger.ONE);
         reverseLookup.put(BigInteger.ONE, root);
+        randomValue = BigInteger.ONE;
     }
 
     public void addRelationship(BigInteger from, BigInteger to) {
@@ -58,6 +60,25 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
         }
 
         universe.put(fromCV, toCV);
+    }
+
+    public Pair<CollatzValue, CollatzValue> getRandomPair() {
+        CollatzValue one = reverseLookup.get(randomValue);
+        if ((one == null) || (one == root)) {
+            // This condition is to avoid the 1, 2 pairing, as well as just non existent values
+            one = root;
+            randomValue = TWO;
+        }
+
+        randomValue = randomValue.add(BigInteger.ONE);
+        CollatzValue two = reverseLookup.get(randomValue);
+
+        if (two == null) {
+            randomValue = BigInteger.ONE;
+            return null;
+        }
+
+        return new Pair<>(one, two);
     }
 
     @Override

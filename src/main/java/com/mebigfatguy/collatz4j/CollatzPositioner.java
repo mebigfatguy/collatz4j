@@ -17,6 +17,8 @@
  */
 package com.mebigfatguy.collatz4j;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,8 @@ public class CollatzPositioner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CollatzPositioner.class);
     private static final float RADIUS = 18.0f;
+
+    private static final Random RANDOM = new Random();
 
     private static final float LONG_REPEL_DISTANCE = RADIUS * 8.0f;
     private static final float LONG_REPEL_DISTANCE_SQUARED = LONG_REPEL_DISTANCE * LONG_REPEL_DISTANCE;
@@ -34,7 +38,8 @@ public class CollatzPositioner implements Runnable {
     private static final float ATTRACTION_DISTANCE = RADIUS * 4.0f;
     private static final float ATTRACTION_DISTANCE_SQUARED = ATTRACTION_DISTANCE * ATTRACTION_DISTANCE;
 
-    private static final float REPEL_MOVEMENT = 5.0f;
+    private static final float SHORT_REPEL_MOVEMENT = 5.0f;
+    private static final float LONG_REPEL_MOVEMENT = 10.0f;
     private static final float ATTRACTION_MOVEMENT = 0.5f;
 
     private CollatzData data;
@@ -74,29 +79,44 @@ public class CollatzPositioner implements Runnable {
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                for (Pair<CollatzValue, CollatzValue> fromTo : data) {
+                if (RANDOM.nextBoolean()) {
+                    for (Pair<CollatzValue, CollatzValue> fromTo : data) {
 
-                    CollatzValue fromCV = fromTo.getKey();
-                    float[] fromLocation = fromCV.getLocation();
+                        CollatzValue fromCV = fromTo.getKey();
+                        float[] fromLocation = fromCV.getLocation();
 
-                    CollatzValue toCV = fromTo.getValue();
-                    if (toCV != null) {
-                        float[] toLocation = toCV.getLocation();
+                        CollatzValue toCV = fromTo.getValue();
+                        if (toCV != null) {
+                            float[] toLocation = toCV.getLocation();
 
-                        if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                            repel(fromLocation, toLocation, REPEL_MOVEMENT);
-                        } else if (isFarAwayFrom(fromLocation, toLocation)) {
-                            attract(fromLocation, toLocation, ATTRACTION_MOVEMENT);
+                            if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                                repel(fromLocation, toLocation, SHORT_REPEL_MOVEMENT);
+                            } else if (isFarAwayFrom(fromLocation, toLocation)) {
+                                attract(fromLocation, toLocation, ATTRACTION_MOVEMENT);
+                            }
+                        }
+
+                        CollatzValue oddValue = fromCV.getOddValueNode();
+                        if (oddValue != null) {
+                            float[] oddLocation = oddValue.getLocation();
+                            if (isCloseTo(fromLocation, oddLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                                repel(fromLocation, oddLocation, SHORT_REPEL_MOVEMENT);
+                            } else if (isFarAwayFrom(fromLocation, oddLocation)) {
+                                attract(fromLocation, oddLocation, ATTRACTION_MOVEMENT);
+                            }
                         }
                     }
+                } else {
+                    for (int i = 0; i < 10; i++) {
+                        Pair<CollatzValue, CollatzValue> randomPair = data.getRandomPair();
+                        if (randomPair == null) {
+                            break;
+                        }
+                        float[] l1 = randomPair.getKey().getLocation();
+                        float[] l2 = randomPair.getValue().getLocation();
 
-                    CollatzValue oddValue = fromCV.getOddValueNode();
-                    if (oddValue != null) {
-                        float[] oddLocation = oddValue.getLocation();
-                        if (isCloseTo(fromLocation, oddLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                            repel(fromLocation, oddLocation, REPEL_MOVEMENT);
-                        } else if (isFarAwayFrom(fromLocation, oddLocation)) {
-                            attract(fromLocation, oddLocation, ATTRACTION_MOVEMENT);
+                        if (isCloseTo(l1, l2, LONG_REPEL_DISTANCE_SQUARED)) {
+                            repel(l1, l2, LONG_REPEL_MOVEMENT);
                         }
                     }
                 }
