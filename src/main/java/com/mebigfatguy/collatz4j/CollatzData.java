@@ -18,29 +18,83 @@
 package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class CollatzData implements Iterable<Map.Entry<CollatzValue, CollatzValue>> {
+public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzValue>> {
 
+    private static BigInteger TWO = new BigInteger("2", 10);
+
+    private Map<BigInteger, CollatzValue> reverseLookup = new ConcurrentHashMap<>();
     private Map<CollatzValue, CollatzValue> universe = new ConcurrentHashMap<>();
+    private CollatzValue root;
+
+    public CollatzData() {
+        root = new CollatzValue(BigInteger.ONE);
+        reverseLookup.put(BigInteger.ONE, root);
+    }
 
     public void addRelationship(BigInteger from, BigInteger to) {
 
-        CollatzValue fromCV = new CollatzValue(from);
-        CollatzValue toCV = new CollatzValue(to);
+        CollatzValue fromCV = reverseLookup.get(from);
+        if (fromCV == null) {
+            fromCV = new CollatzValue(from);
+            reverseLookup.put(from, fromCV);
+        }
+
+        CollatzValue toCV = reverseLookup.get(to);
+        if (toCV == null) {
+            toCV = new CollatzValue(to);
+            reverseLookup.put(to, toCV);
+        }
+
         if (fromCV.isOdd()) {
-            toCV.setOddValue(fromCV);
+            toCV.setOddValueNode(fromCV);
         } else {
-            toCV.setEvenValue(fromCV);
+            toCV.setEvenValueNode(fromCV);
         }
 
         universe.put(fromCV, toCV);
     }
 
     @Override
-    public Iterator<Map.Entry<CollatzValue, CollatzValue>> iterator() {
-        return universe.entrySet().iterator();
+    public Iterator<Pair<CollatzValue, CollatzValue>> iterator() {
+        return new CollatzIterator();
+    }
+
+    public class CollatzIterator implements Iterator<Pair<CollatzValue, CollatzValue>> {
+
+        private Deque<CollatzValue> roots = new ArrayDeque<>();
+
+        public CollatzIterator() {
+            roots.add(root);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !roots.isEmpty();
+        }
+
+        @Override
+        public Pair<CollatzValue, CollatzValue> next() {
+            CollatzValue current = roots.removeFirst();
+
+            CollatzValue oddValue = current.getOddValueNode();
+            if (oddValue != null) {
+                if (!oddValue.equals(root)) {
+                    roots.addLast(oddValue);
+                }
+            }
+
+            CollatzValue evenValue = reverseLookup.get(current.getValue().multiply(TWO));
+            if (evenValue != null) {
+                roots.addLast(evenValue);
+            }
+
+            return new Pair<>(current, universe.get(current));
+        }
     }
 }

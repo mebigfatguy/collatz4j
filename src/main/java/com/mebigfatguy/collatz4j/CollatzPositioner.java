@@ -17,8 +17,6 @@
  */
 package com.mebigfatguy.collatz4j;
 
-import java.util.Map;
-
 public class CollatzPositioner implements Runnable {
 
     private static final float RADIUS = 18.0f;
@@ -68,23 +66,29 @@ public class CollatzPositioner implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            for (Map.Entry<CollatzValue, CollatzValue> entry : data) {
+            for (Pair<CollatzValue, CollatzValue> fromTo : data) {
 
-                CollatzValue fromCV = entry.getKey();
+                CollatzValue fromCV = fromTo.getKey();
                 float[] fromLocation = fromCV.getLocation();
-                float[] toLocation = entry.getValue().getLocation();
 
-                if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                    repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
-                } else if (isFarAwayFrom(fromLocation, toLocation)) {
-                    attract(fromLocation, toLocation);
+                CollatzValue toCV = fromTo.getValue();
+                if (toCV != null) {
+                    float[] toLocation = toCV.getLocation();
+
+                    if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                        repel(fromLocation, toLocation, SHORT_REPEL_DISTANCE / 3);
+                    } else if (isFarAwayFrom(fromLocation, toLocation)) {
+                        attract(fromLocation, toLocation);
+                    }
                 }
 
-                CollatzValue oddValue = fromCV.getOddValue();
+                CollatzValue oddValue = fromCV.getOddValueNode();
                 if (oddValue != null) {
                     float[] oddLocation = oddValue.getLocation();
-                    if (isCloseTo(fromLocation, oddLocation, LONG_REPEL_DISTANCE_SQUARED)) {
-                        repel(fromLocation, oddLocation, LONG_REPEL_DISTANCE / 3);
+                    float distance = distanceSquared(fromLocation, oddLocation);
+                    if (distance < LONG_REPEL_DISTANCE_SQUARED) {
+                        float repelDistance = (float) (Math.sqrt(LONG_REPEL_DISTANCE_SQUARED - distance) / 3);
+                        repel(fromLocation, oddLocation, repelDistance);
                     }
                 }
             }

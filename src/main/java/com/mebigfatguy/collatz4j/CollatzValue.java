@@ -18,12 +18,13 @@
 package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public final class CollatzValue {
 
     private BigInteger value;
-    private CollatzValue oddValue;
-    private CollatzValue evenValue;
+    private CollatzValue oddValueName;
+    private CollatzValue evenValueName;
     private float[] location;
 
     public CollatzValue(BigInteger v) {
@@ -32,20 +33,20 @@ public final class CollatzValue {
         location = new float[3];
     }
 
-    public CollatzValue getOddValue() {
-        return oddValue;
+    public CollatzValue getOddValueNode() {
+        return oddValueName;
     }
 
-    public void setOddValue(CollatzValue oddValue) {
-        this.oddValue = oddValue;
+    public void setOddValueNode(CollatzValue oddValue) {
+        oddValueName = oddValue;
     }
 
-    public CollatzValue getEvenValue() {
-        return evenValue;
+    public CollatzValue getEvenValueNode() {
+        return evenValueName;
     }
 
-    public void setEvenValue(CollatzValue evenValue) {
-        this.evenValue = evenValue;
+    public void setEvenValueNode(CollatzValue evenValue) {
+        evenValueName = evenValue;
     }
 
     public float[] getLocation() {
@@ -74,5 +75,10 @@ public final class CollatzValue {
         CollatzValue that = (CollatzValue) o;
 
         return value.equals(that.value);
+    }
+
+    @Override
+    public String toString() {
+        return "Value: " + value + " Location: " + Arrays.toString(location);
     }
 }

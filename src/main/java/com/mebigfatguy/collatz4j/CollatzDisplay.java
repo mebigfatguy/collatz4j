@@ -23,7 +23,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -125,28 +124,30 @@ public final class CollatzDisplay {
         window.setPosition((screenBounds.width - w) / 2, (screenBounds.height - h) / 3);
     }
 
-    void render(GLAutoDrawable drawable, GL2 gl, Map.Entry<CollatzValue, CollatzValue> entry) {
+    void render(GLAutoDrawable drawable, GL2 gl, Pair<CollatzValue, CollatzValue> entry) {
         CollatzValue from = entry.getKey();
         float[] fromLocation = from.getLocation();
 
         CollatzValue to = entry.getValue();
-        float[] toLocation = to.getLocation();
+        if (to != null) {
+            float[] toLocation = to.getLocation();
 
-        try {
-            gl.glBegin(GL2.GL_LINES);
-            gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-            gl.glVertex3fv(fromLocation, 0);
-            gl.glVertex3fv(toLocation, 0);
-            gl.glEnd();
+            try {
+                gl.glBegin(GL2.GL_LINES);
+                gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
+                gl.glVertex3fv(fromLocation, 0);
+                gl.glVertex3fv(toLocation, 0);
+                gl.glEnd();
 
-            textRenderer.begin3DRendering();
-            textRenderer.setColor(1.0f, 0.2f, 0.2f, 1.0f);
+                textRenderer.begin3DRendering();
+                textRenderer.setColor(1.0f, 0.2f, 0.2f, 1.0f);
 
-            textRenderer.draw3D(from.getValue().toString(), fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
+                textRenderer.draw3D(from.getValue().toString(), fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
 
-            textRenderer.draw3D(to.getValue().toString(), toLocation[0], toLocation[1], toLocation[2], 1.0f);
-        } finally {
-            textRenderer.end3DRendering();
+                textRenderer.draw3D(to.getValue().toString(), toLocation[0], toLocation[1], toLocation[2], 1.0f);
+            } finally {
+                textRenderer.end3DRendering();
+            }
         }
     }
 
@@ -161,7 +162,7 @@ public final class CollatzDisplay {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
             gl.glEnable(GL.GL_BLEND);
 
-            for (Map.Entry<CollatzValue, CollatzValue> entry : data) {
+            for (Pair<CollatzValue, CollatzValue> entry : data) {
                 render(drawable, gl, entry);
             }
         }
