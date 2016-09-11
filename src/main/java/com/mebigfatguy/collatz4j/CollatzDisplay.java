@@ -125,11 +125,11 @@ public final class CollatzDisplay {
     }
 
     void render(GLAutoDrawable drawable, GL2 gl, Pair<CollatzValue, CollatzValue> entry) {
-        CollatzValue from = entry.getKey();
-        float[] fromLocation = from.getLocation();
 
         CollatzValue to = entry.getValue();
         if (to != null) {
+            CollatzValue from = entry.getKey();
+            float[] fromLocation = from.getLocation();
             float[] toLocation = to.getLocation();
 
             try {
