@@ -40,12 +40,13 @@ public class Pair<K, V> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (!(obj instanceof Pair)) {
             return false;
         }
 
-        Pair that = (Pair) obj;
+        Pair<K, V> that = (Pair<K, V>) obj;
         return key.equals(that.key) && value.equals(that.value);
     }
 
