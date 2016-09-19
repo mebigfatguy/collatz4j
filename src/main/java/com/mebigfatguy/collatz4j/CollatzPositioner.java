@@ -113,10 +113,11 @@ public class CollatzPositioner implements Runnable {
     }
 
     private static boolean isRelated(CollatzValue fromCV, CollatzValue toCV) {
-        if (toCV.equals(fromCV.getOddValueNode())) {
+
+        if (toCV.equals(fromCV.getEvenValueNode())) {
             return true;
         }
-        if (toCV.equals(fromCV.getEvenValueNode())) {
+        if (toCV.equals(fromCV.getOddValueNode()) || fromCV.equals(toCV.getOddValueNode())) {
             return true;
         }
 
