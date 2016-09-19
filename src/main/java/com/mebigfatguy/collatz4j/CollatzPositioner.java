@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.collatz4j;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -79,44 +80,29 @@ public class CollatzPositioner implements Runnable {
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                if (RANDOM.nextBoolean()) {
-                    for (Pair<CollatzValue, CollatzValue> fromTo : data) {
+                Iterator<Pair<CollatzValue, CollatzValue>> it = data.getPositioningIterator();
+                while (it.hasNext()) {
+                    Pair<CollatzValue, CollatzValue> fromTo = it.next();
 
-                        CollatzValue fromCV = fromTo.getKey();
-                        float[] fromLocation = fromCV.getLocation();
+                    CollatzValue fromCV = fromTo.getKey();
+                    float[] fromLocation = fromCV.getLocation();
 
-                        CollatzValue toCV = fromTo.getValue();
-                        if (toCV != null) {
-                            float[] toLocation = toCV.getLocation();
+                    CollatzValue toCV = fromTo.getValue();
+                    if (toCV != null) {
+                        float[] toLocation = toCV.getLocation();
 
-                            if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                                repel(fromLocation, toLocation, SHORT_REPEL_MOVEMENT);
-                            } else if (isFarAwayFrom(fromLocation, toLocation)) {
-                                attract(fromLocation, toLocation, ATTRACTION_MOVEMENT);
+                        if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                            repel(fromLocation, toLocation, SHORT_REPEL_MOVEMENT);
+                        } else {
+                            if (isRelated(fromCV, toCV)) {
+                                if (isFarAwayFrom(fromLocation, toLocation)) {
+                                    attract(fromLocation, toLocation, ATTRACTION_MOVEMENT);
+                                }
+                            } else {
+                                if (isCloseTo(fromLocation, toLocation, LONG_REPEL_DISTANCE_SQUARED)) {
+                                    repel(fromLocation, toLocation, LONG_REPEL_MOVEMENT);
+                                }
                             }
-                        }
-
-                        CollatzValue oddValue = fromCV.getOddValueNode();
-                        if (oddValue != null) {
-                            float[] oddLocation = oddValue.getLocation();
-                            if (isCloseTo(fromLocation, oddLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
-                                repel(fromLocation, oddLocation, SHORT_REPEL_MOVEMENT);
-                            } else if (isFarAwayFrom(fromLocation, oddLocation)) {
-                                attract(fromLocation, oddLocation, ATTRACTION_MOVEMENT);
-                            }
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < 10; i++) {
-                        Pair<CollatzValue, CollatzValue> randomPair = data.getRandomPair();
-                        if (randomPair == null) {
-                            break;
-                        }
-                        float[] l1 = randomPair.getKey().getLocation();
-                        float[] l2 = randomPair.getValue().getLocation();
-
-                        if (isCloseTo(l1, l2, LONG_REPEL_DISTANCE_SQUARED)) {
-                            repel(l1, l2, LONG_REPEL_MOVEMENT);
                         }
                     }
                 }
@@ -124,6 +110,17 @@ public class CollatzPositioner implements Runnable {
         } catch (Exception e) {
             LOGGER.error("CollatzPositioner has exited", e);
         }
+    }
+
+    private static boolean isRelated(CollatzValue fromCV, CollatzValue toCV) {
+        if (toCV.equals(fromCV.getOddValueNode())) {
+            return true;
+        }
+        if (toCV.equals(fromCV.getEvenValueNode())) {
+            return true;
+        }
+
+        return false;
     }
 
     private static boolean isCloseTo(float[] fromLocation, float[] toLocation, float distance) {

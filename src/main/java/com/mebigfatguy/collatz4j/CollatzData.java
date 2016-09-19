@@ -27,16 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzValue>> {
 
     private static BigInteger TWO = BigInteger.valueOf(2L);
+    private static BigInteger THREE = BigInteger.valueOf(3L);
 
     private Map<BigInteger, CollatzValue> reverseLookup = new ConcurrentHashMap<>();
     private Map<CollatzValue, CollatzValue> universe = new ConcurrentHashMap<>();
     private CollatzValue root;
-    private BigInteger randomValue;
 
     public CollatzData() {
         root = new CollatzValue(BigInteger.ONE);
         reverseLookup.put(BigInteger.ONE, root);
-        randomValue = BigInteger.ONE;
     }
 
     public void addRelationship(BigInteger from, BigInteger to) {
@@ -60,25 +59,6 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
         }
 
         universe.put(fromCV, toCV);
-    }
-
-    public Pair<CollatzValue, CollatzValue> getRandomPair() {
-        CollatzValue one = reverseLookup.get(randomValue);
-        if ((one == null) || (one == root)) {
-            // This condition is to avoid the 1, 2 pairing, as well as just non existent values
-            one = root;
-            randomValue = TWO;
-        }
-
-        randomValue = randomValue.add(BigInteger.ONE);
-        CollatzValue two = reverseLookup.get(randomValue);
-
-        if (two == null) {
-            randomValue = BigInteger.ONE;
-            return null;
-        }
-
-        return new Pair<>(one, two);
     }
 
     @Override
@@ -118,4 +98,73 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
             return new Pair<>(current, universe.get(current));
         }
     }
+
+    public Iterator<Pair<CollatzValue, CollatzValue>> getPositioningIterator() {
+        return new CollatzPositioningIterator();
+    }
+
+    public class CollatzPositioningIterator implements Iterator<Pair<CollatzValue, CollatzValue>> {
+
+        private Deque<CollatzValue> rootsLeft = new ArrayDeque<>();
+        private Deque<CollatzValue> rootsRight = new ArrayDeque<>();
+
+        public CollatzPositioningIterator() {
+            rootsLeft.add(root);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !rootsLeft.isEmpty();
+        }
+
+        @Override
+        public Pair<CollatzValue, CollatzValue> next() {
+
+            CollatzValue rightValue;
+
+            while (!rootsLeft.isEmpty()) {
+                CollatzValue leftValue = rootsLeft.getFirst();
+                if (!rootsRight.isEmpty()) {
+                    rightValue = rootsRight.removeFirst();
+
+                    CollatzValue oddValue = rightValue.getOddValueNode();
+                    if (oddValue != null) {
+                        if (!oddValue.equals(root)) {
+                            rootsRight.addLast(oddValue);
+                        }
+                    }
+
+                    CollatzValue evenValue = reverseLookup.get(rightValue.getValue().multiply(TWO));
+                    if (evenValue != null) {
+                        rootsRight.addLast(evenValue);
+                    }
+
+                    return new Pair<>(leftValue, rightValue);
+                }
+
+                leftValue = rootsLeft.removeFirst();
+
+                CollatzValue oddValue = leftValue.getOddValueNode();
+                if (oddValue != null) {
+                    if (!oddValue.equals(root)) {
+                        rootsLeft.addLast(oddValue);
+                    }
+                }
+
+                CollatzValue evenValue = reverseLookup.get(leftValue.getValue().multiply(TWO));
+                if (evenValue != null) {
+                    rootsLeft.addLast(evenValue);
+                }
+
+                rightValue = reverseLookup.get(leftValue.getValue().add(BigInteger.ONE));
+                if (rightValue == null) {
+                    return new Pair<>(root, reverseLookup.get(THREE));
+                }
+                rootsRight.add(rightValue);
+            }
+
+            return new Pair<>(root, reverseLookup.get(THREE));
+        }
+    }
+
 }
