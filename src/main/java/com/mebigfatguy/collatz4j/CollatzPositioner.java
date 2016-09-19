@@ -30,18 +30,18 @@ public class CollatzPositioner implements Runnable {
 
     private static final Random RANDOM = new Random();
 
-    private static final float LONG_REPEL_DISTANCE = RADIUS * 8.0f;
-    private static final float LONG_REPEL_DISTANCE_SQUARED = LONG_REPEL_DISTANCE * LONG_REPEL_DISTANCE;
+    private static final float LONG_REPEL_DISTANCE = RADIUS * 80.0f;
+    private static final float LONG_REPEL_DISTANCE_SQUARED = LONG_REPEL_DISTANCE + LONG_REPEL_DISTANCE + LONG_REPEL_DISTANCE;
 
-    private static final float SHORT_REPEL_DISTANCE = RADIUS * 3.0f;
-    private static final float SHORT_REPEL_DISTANCE_SQUARED = SHORT_REPEL_DISTANCE * SHORT_REPEL_DISTANCE;
+    private static final float SHORT_REPEL_DISTANCE = RADIUS * 40.0f;
+    private static final float SHORT_REPEL_DISTANCE_SQUARED = SHORT_REPEL_DISTANCE + SHORT_REPEL_DISTANCE + SHORT_REPEL_DISTANCE;
 
-    private static final float ATTRACTION_DISTANCE = RADIUS * 4.0f;
-    private static final float ATTRACTION_DISTANCE_SQUARED = ATTRACTION_DISTANCE * ATTRACTION_DISTANCE;
+    private static final float ATTRACTION_DISTANCE = RADIUS * 120.0f;
+    private static final float ATTRACTION_DISTANCE_SQUARED = ATTRACTION_DISTANCE + ATTRACTION_DISTANCE + ATTRACTION_DISTANCE;
 
-    private static final float SHORT_REPEL_MOVEMENT = 5.0f;
-    private static final float LONG_REPEL_MOVEMENT = 10.0f;
-    private static final float ATTRACTION_MOVEMENT = 0.5f;
+    private static final float SHORT_REPEL_MOVEMENT = 1.2f;
+    private static final float LONG_REPEL_MOVEMENT = 2.0f;
+    private static final float ATTRACTION_MOVEMENT = 3.0f;
 
     private CollatzData data;
     private Thread positionerThread;
@@ -91,15 +91,16 @@ public class CollatzPositioner implements Runnable {
                     if (toCV != null) {
                         float[] toLocation = toCV.getLocation();
 
-                        if (isCloseTo(fromLocation, toLocation, SHORT_REPEL_DISTANCE_SQUARED)) {
+                        float distanceSq = distanceSquared(fromLocation, toLocation);
+                        if (distanceSq < SHORT_REPEL_DISTANCE_SQUARED) {
                             repel(fromLocation, toLocation, SHORT_REPEL_MOVEMENT);
                         } else {
                             if (isRelated(fromCV, toCV)) {
-                                if (isFarAwayFrom(fromLocation, toLocation)) {
+                                if (distanceSq > ATTRACTION_DISTANCE_SQUARED) {
                                     attract(fromLocation, toLocation, ATTRACTION_MOVEMENT);
                                 }
                             } else {
-                                if (isCloseTo(fromLocation, toLocation, LONG_REPEL_DISTANCE_SQUARED)) {
+                                if (distanceSq < LONG_REPEL_DISTANCE_SQUARED) {
                                     repel(fromLocation, toLocation, LONG_REPEL_MOVEMENT);
                                 }
                             }
@@ -114,7 +115,7 @@ public class CollatzPositioner implements Runnable {
 
     private static boolean isRelated(CollatzValue fromCV, CollatzValue toCV) {
 
-        if (toCV.equals(fromCV.getEvenValueNode())) {
+        if (toCV.equals(fromCV.getEvenValueNode()) || (fromCV.equals(toCV.getEvenValueNode()))) {
             return true;
         }
         if (toCV.equals(fromCV.getOddValueNode()) || fromCV.equals(toCV.getOddValueNode())) {
@@ -122,11 +123,6 @@ public class CollatzPositioner implements Runnable {
         }
 
         return false;
-    }
-
-    private static boolean isCloseTo(float[] fromLocation, float[] toLocation, float distance) {
-        float distanceSq = distanceSquared(fromLocation, toLocation);
-        return distanceSq < distance;
     }
 
     public static float[] unitVector(float[] fromLocation, float[] toLocation) {
@@ -167,12 +163,6 @@ public class CollatzPositioner implements Runnable {
             fromLocation[i] += adjust;
             toLocation[i] -= adjust;
         }
-    }
-
-    private static boolean isFarAwayFrom(float[] fromLocation, float[] toLocation) {
-
-        float distanceSq = distanceSquared(fromLocation, toLocation);
-        return distanceSq > ATTRACTION_DISTANCE_SQUARED;
     }
 
     private static float distanceSquared(float[] pos1, float[] pos2) {

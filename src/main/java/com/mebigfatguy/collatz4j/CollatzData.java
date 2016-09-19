@@ -110,6 +110,10 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
 
         public CollatzPositioningIterator() {
             rootsLeft.add(root);
+            CollatzValue rightValue = reverseLookup.get(THREE);
+            if (rightValue != null) {
+                rootsRight.addLast(rightValue);
+            }
         }
 
         @Override
