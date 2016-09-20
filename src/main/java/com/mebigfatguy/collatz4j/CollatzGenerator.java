@@ -19,7 +19,11 @@ package com.mebigfatguy.collatz4j;
 
 import java.math.BigInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public final class CollatzGenerator implements Runnable, TerminationListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollatzGenerator.class);
 
     private static final long GENERATION_TIME = 500L;
     private CollatzData data;
@@ -80,7 +84,7 @@ public final class CollatzGenerator implements Runnable, TerminationListener {
                 nextValue = nextValue.add(BigInteger.ONE);
             }
         } catch (InterruptedException e) {
-
+            LOGGER.error("CollatzGenerator has exited", e);
         }
     }
 }
