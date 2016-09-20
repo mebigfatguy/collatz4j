@@ -18,7 +18,6 @@
 package com.mebigfatguy.collatz4j;
 
 import java.util.Iterator;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +26,6 @@ public class CollatzPositioner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CollatzPositioner.class);
     private static final float RADIUS = 18.0f;
-
-    private static final Random RANDOM = new Random();
 
     private static final float LONG_REPEL_DISTANCE = RADIUS * 80.0f;
     private static final float LONG_REPEL_DISTANCE_SQUARED = LONG_REPEL_DISTANCE + LONG_REPEL_DISTANCE + LONG_REPEL_DISTANCE;
