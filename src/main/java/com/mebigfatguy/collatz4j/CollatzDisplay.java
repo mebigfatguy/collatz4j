@@ -22,6 +22,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,6 +52,9 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 
 public final class CollatzDisplay {
 
+    private static final int FONT_SIZE = 18;
+    private static final int HALF_FONT_HEIGHT = FONT_SIZE / 2;
+
     private static final float[] ORIGIN = { 0.0f, 0.0f, 0.0f };
     private static final float STEP_SIZE = 10.0f;
     private static final float ROTATION_SIZE = (float) (Math.PI / 180.0f);
@@ -65,6 +70,7 @@ public final class CollatzDisplay {
     private TextRenderer textRenderer;
     private CollatzPositioner positioner;
     private float[] eyeLocation = { 0, 0, 500 };
+    private float[] digitWidths = new float[10];
 
     private CollatzData data;
 
@@ -133,22 +139,34 @@ public final class CollatzDisplay {
             float[] toLocation = to.getLocation();
 
             try {
+                String fromNum = from.getValue().toString();
+                String toNum = to.getValue().toString();
+
                 gl.glBegin(GL2.GL_LINES);
                 gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-                gl.glVertex3fv(fromLocation, 0);
-                gl.glVertex3fv(toLocation, 0);
+                gl.glVertex3f(fromLocation[0] + (width(fromNum) / 2.0f), fromLocation[1] + HALF_FONT_HEIGHT, fromLocation[2]);
+                gl.glVertex3f(toLocation[0] + (width(toNum) / 2.0f), toLocation[1] + HALF_FONT_HEIGHT, toLocation[2]);
                 gl.glEnd();
 
                 textRenderer.begin3DRendering();
                 textRenderer.setColor(1.0f, 0.2f, 0.2f, 1.0f);
 
-                textRenderer.draw3D(from.getValue().toString(), fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
-
-                textRenderer.draw3D(to.getValue().toString(), toLocation[0], toLocation[1], toLocation[2], 1.0f);
+                textRenderer.draw3D(fromNum, fromLocation[0], fromLocation[1], fromLocation[2], 1.0f);
+                textRenderer.draw3D(toNum, toLocation[0], toLocation[1], toLocation[2], 1.0f);
             } finally {
                 textRenderer.end3DRendering();
             }
         }
+    }
+
+    private float width(String num) {
+        float width = 0.0f;
+        int len = num.length();
+        for (int i = 0; i < len; i++) {
+            width += digitWidths[(char) (num.charAt(i) - '0')];
+        }
+
+        return width;
     }
 
     class CDEvents implements GLEventListener {
@@ -190,7 +208,18 @@ public final class CollatzDisplay {
             gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_DIFFUSE, DIFFUSE, 0);
             gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, LIGHT_POSITION, 0);
 
-            textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 18));
+            Font f = new Font("SansSerif", Font.BOLD, FONT_SIZE);
+            textRenderer = new TextRenderer(f);
+
+            FontRenderContext frc = new FontRenderContext(null, false, false);
+
+            char[] digit = new char[1];
+            for (int i = 0; i < 10; i++) {
+                digit[0] = (char) ('0' + i);
+
+                Rectangle2D r = f.getStringBounds(digit, 0, 1, frc);
+                digitWidths[i] = (float) r.getWidth();
+            }
         }
 
         @Override
