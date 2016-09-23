@@ -110,7 +110,7 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
 
         public CollatzPositioningIterator() {
             rootsLeft.add(root);
-            nextRightValue = THREE;
+            nextRightValue = TWO;
         }
 
         @Override

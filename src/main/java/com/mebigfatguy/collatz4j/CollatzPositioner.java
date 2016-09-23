@@ -38,7 +38,7 @@ public class CollatzPositioner implements Runnable {
 
     private static final float SHORT_REPEL_MOVEMENT = 1.2f;
     private static final float LONG_REPEL_MOVEMENT = 2.0f;
-    private static final float ATTRACTION_MOVEMENT = 3.0f;
+    private static final float ATTRACTION_MOVEMENT = 4.0f;
 
     private CollatzData data;
     private Thread positionerThread;
