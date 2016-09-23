@@ -106,14 +106,11 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
     public class CollatzPositioningIterator implements Iterator<Pair<CollatzValue, CollatzValue>> {
 
         private Deque<CollatzValue> rootsLeft = new ArrayDeque<>();
-        private Deque<CollatzValue> rootsRight = new ArrayDeque<>();
+        BigInteger nextRightValue;
 
         public CollatzPositioningIterator() {
             rootsLeft.add(root);
-            CollatzValue rightValue = reverseLookup.get(THREE);
-            if (rightValue != null) {
-                rootsRight.addLast(rightValue);
-            }
+            nextRightValue = THREE;
         }
 
         @Override
@@ -128,22 +125,13 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
 
             while (!rootsLeft.isEmpty()) {
                 CollatzValue leftValue = rootsLeft.getFirst();
-                if (!rootsRight.isEmpty()) {
-                    rightValue = rootsRight.removeFirst();
+                rightValue = reverseLookup.get(nextRightValue);
 
-                    CollatzValue oddValue = rightValue.getOddValueNode();
-                    if (oddValue != null) {
-                        if (!oddValue.equals(root)) {
-                            rootsRight.addLast(oddValue);
-                        }
-                    }
+                if (rightValue != null) {
+                    Pair p = new Pair<>(leftValue, rightValue);
+                    nextRightValue = nextRightValue.add(BigInteger.ONE);
 
-                    CollatzValue evenValue = reverseLookup.get(rightValue.getValue().multiply(TWO));
-                    if (evenValue != null) {
-                        rootsRight.addLast(evenValue);
-                    }
-
-                    return new Pair<>(leftValue, rightValue);
+                    return p;
                 }
 
                 leftValue = rootsLeft.removeFirst();
@@ -160,11 +148,7 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
                     rootsLeft.addLast(evenValue);
                 }
 
-                rightValue = reverseLookup.get(leftValue.getValue().add(BigInteger.ONE));
-                if (rightValue == null) {
-                    return new Pair<>(root, reverseLookup.get(THREE));
-                }
-                rootsRight.add(rightValue);
+                nextRightValue = leftValue.getValue().add(BigInteger.ONE);
             }
 
             return new Pair<>(root, reverseLookup.get(THREE));
