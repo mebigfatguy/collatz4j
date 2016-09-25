@@ -48,7 +48,7 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
 
         CollatzValue toCV = reverseLookup.get(to);
         if (toCV == null) {
-            toCV = new CollatzValue(to);
+            toCV = new CollatzValue(to, fromCV);
             reverseLookup.put(to, toCV);
         }
 

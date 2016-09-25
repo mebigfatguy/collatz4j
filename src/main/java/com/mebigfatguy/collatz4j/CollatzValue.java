@@ -35,6 +35,11 @@ public final class CollatzValue {
         location = new float[] { RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10 };
     }
 
+    public CollatzValue(BigInteger v, CollatzValue nearValue) {
+        value = v;
+        location = nearValue.location.clone();
+    }
+
     public CollatzValue getOddValueNode() {
         return oddValueName;
     }
