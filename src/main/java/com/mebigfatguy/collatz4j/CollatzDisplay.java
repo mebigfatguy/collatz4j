@@ -24,6 +24,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,11 +59,6 @@ public final class CollatzDisplay {
     private static final float[] ORIGIN = { 0.0f, 0.0f, 0.0f };
     private static final float STEP_SIZE = 10.0f;
     private static final float ROTATION_SIZE = (float) (Math.PI / 180.0f);
-
-    private static final float[] AMBIENT = { 0.7f, 0.7f, 0.7f, 1 };
-    private static final float[] SPECULAR = { 0.5f, 0.5f, 0.5f, 1 };
-    private static final float[] DIFFUSE = { 1, 1, 1, 1 };
-    private static final float[] LIGHT_POSITION = { 0, 3000, 2000, 1 };
 
     private final Set<TerminationListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private GLWindow glWindow;
@@ -139,11 +135,20 @@ public final class CollatzDisplay {
             float[] toLocation = to.getLocation();
 
             try {
-                String fromNum = from.getValue().toString();
-                String toNum = to.getValue().toString();
+                BigInteger fromValue = from.getValue();
+                BigInteger toValue = to.getValue();
+
+                String fromNum = fromValue.toString();
+                String toNum = toValue.toString();
+
+                if (from.equals(to.getOddValueNode()) || to.equals(from.getOddValueNode())) {
+                    gl.glColor4f(0.8f, 0.8f, 0.0f, 1.0f);
+                } else {
+                    gl.glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
+                }
+                gl.glLineWidth(2.0f);
 
                 gl.glBegin(GL2.GL_LINES);
-                gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
                 gl.glVertex3f(fromLocation[0] + (width(fromNum) / 2.0f), fromLocation[1] + HALF_FONT_HEIGHT, fromLocation[2]);
                 gl.glVertex3f(toLocation[0] + (width(toNum) / 2.0f), toLocation[1] + HALF_FONT_HEIGHT, toLocation[2]);
                 gl.glEnd();
@@ -198,15 +203,8 @@ public final class CollatzDisplay {
 
             gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthFunc(GL.GL_LEQUAL);
-            gl.glShadeModel(GLLightingFunc.GL_SMOOTH);
 
-            gl.glEnable(GLLightingFunc.GL_LIGHTING);
-            gl.glEnable(GLLightingFunc.GL_LIGHT0);
-
-            gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, AMBIENT, 0);
-            gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_SPECULAR, SPECULAR, 0);
-            gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_DIFFUSE, DIFFUSE, 0);
-            gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, LIGHT_POSITION, 0);
+            gl.glDisable(GLLightingFunc.GL_LIGHTING);
 
             Font f = new Font("SansSerif", Font.BOLD, FONT_SIZE);
             textRenderer = new TextRenderer(f);
