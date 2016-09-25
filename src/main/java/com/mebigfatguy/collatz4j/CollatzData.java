@@ -105,27 +105,32 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
 
     public class CollatzPositioningIterator implements Iterator<Pair<CollatzValue, CollatzValue>> {
 
-        private Deque<CollatzValue> rootsLeft = new ArrayDeque<>();
+        BigInteger nextLeftValue;
         BigInteger nextRightValue;
+        boolean hasNext;
 
         public CollatzPositioningIterator() {
-            rootsLeft.add(root);
+            nextLeftValue = BigInteger.ONE;
             nextRightValue = TWO;
+            hasNext = true;
         }
 
         @Override
         public boolean hasNext() {
-            return !rootsLeft.isEmpty();
+            return hasNext;
         }
 
         @Override
         public Pair<CollatzValue, CollatzValue> next() {
 
-            CollatzValue rightValue;
+            while (true) {
+                CollatzValue leftValue = reverseLookup.get(nextLeftValue);
+                if (leftValue == null) {
+                    hasNext = false;
+                    return new Pair<>(root, reverseLookup.get(THREE));
+                }
 
-            while (!rootsLeft.isEmpty()) {
-                CollatzValue leftValue = rootsLeft.getFirst();
-                rightValue = reverseLookup.get(nextRightValue);
+                CollatzValue rightValue = reverseLookup.get(nextRightValue);
 
                 if (rightValue != null) {
                     Pair p = new Pair<>(leftValue, rightValue);
@@ -134,24 +139,9 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
                     return p;
                 }
 
-                leftValue = rootsLeft.removeFirst();
-
-                CollatzValue oddValue = leftValue.getOddValueNode();
-                if (oddValue != null) {
-                    if (!oddValue.equals(root)) {
-                        rootsLeft.addLast(oddValue);
-                    }
-                }
-
-                CollatzValue evenValue = reverseLookup.get(leftValue.getValue().multiply(TWO));
-                if (evenValue != null) {
-                    rootsLeft.addLast(evenValue);
-                }
-
-                nextRightValue = leftValue.getValue().add(BigInteger.ONE);
+                nextLeftValue = nextLeftValue.add(BigInteger.ONE);
+                nextRightValue = nextLeftValue.add(BigInteger.ONE);
             }
-
-            return new Pair<>(root, reverseLookup.get(THREE));
         }
     }
 
