@@ -32,7 +32,7 @@ public final class CollatzValue {
 
     public CollatzValue(BigInteger v) {
         value = v;
-        location = new float[] { RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10, RANDOM.nextFloat() * 10 };
+        location = new float[] { (RANDOM.nextFloat() * 100) - 50, (RANDOM.nextFloat() * 100) - 50, (RANDOM.nextFloat() * 100) - 50 };
     }
 
     public CollatzValue(BigInteger v, CollatzValue nearValue) {
