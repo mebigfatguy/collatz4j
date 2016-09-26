@@ -243,9 +243,8 @@ public final class CollatzDisplay {
         public void keyPressed(KeyEvent e) {
 
             GL2 gl = glWindow.getGL().getGL2();
-            gl.getContext().makeCurrent();
 
-            try {
+            try (ContextController cc = new ContextController(gl)) {
 
                 gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
                 gl.glLoadIdentity();
@@ -280,8 +279,6 @@ public final class CollatzDisplay {
                 glu.gluLookAt(eyeLocation[0], eyeLocation[1], eyeLocation[2], 0, 0, 0, 0, 1, 0);
 
                 gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-            } finally {
-                gl.getContext().release();
             }
         }
     }

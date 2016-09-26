@@ -139,6 +139,14 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
                     return p;
                 }
 
+                rightValue = leftValue.getEvenValueNode();
+                if (rightValue != null) {
+                    if (nextRightValue.compareTo(rightValue.getValue()) < 0) {
+                        nextRightValue = rightValue.getValue().add(BigInteger.ONE);
+                        return new Pair<>(leftValue, rightValue);
+                    }
+                }
+
                 nextLeftValue = nextLeftValue.add(BigInteger.ONE);
                 nextRightValue = nextLeftValue.add(BigInteger.ONE);
             }
