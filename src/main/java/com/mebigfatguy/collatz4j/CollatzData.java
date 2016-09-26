@@ -133,7 +133,7 @@ public final class CollatzData implements Iterable<Pair<CollatzValue, CollatzVal
                 CollatzValue rightValue = reverseLookup.get(nextRightValue);
 
                 if (rightValue != null) {
-                    Pair p = new Pair<>(leftValue, rightValue);
+                    Pair<CollatzValue, CollatzValue> p = new Pair<>(leftValue, rightValue);
                     nextRightValue = nextRightValue.add(BigInteger.ONE);
 
                     return p;
