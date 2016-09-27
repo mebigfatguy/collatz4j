@@ -126,7 +126,7 @@ public final class CollatzDisplay {
         window.setPosition((screenBounds.width - w) / 2, (screenBounds.height - h) / 3);
     }
 
-    void render(GLAutoDrawable drawable, GL2 gl, Pair<CollatzValue, CollatzValue> entry) {
+    void render(@SuppressWarnings("unused") GLAutoDrawable drawable, GL2 gl, Pair<CollatzValue, CollatzValue> entry) {
 
         CollatzValue to = entry.getValue();
         if (to != null) {
