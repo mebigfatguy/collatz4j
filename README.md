@@ -60,4 +60,6 @@ A couple of points, that may not be immediately obvious.
 
 This program attempts to draw a 3D visualization of this graph.
 
+Use the left/right arrows to spin the graph, and the up/down arrows to zoom in and out.
+
 For a good overview of the Collatz Conjecture, watch this [video](https://www.youtube.com/watch?v=5mFpVDpKX70).
