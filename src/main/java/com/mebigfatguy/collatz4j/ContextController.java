@@ -17,9 +17,9 @@
  */
 package com.mebigfatguy.collatz4j;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLContext;
-import javax.media.opengl.GLException;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLException;
 
 public class ContextController implements AutoCloseable {
 
