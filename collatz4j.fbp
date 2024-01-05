@@ -1,10 +1,10 @@
 <Project projectName="collatz4j">
   <Jar>./target/classes</Jar>
   <AuxClasspathEntry>./lib/gluegen-rt-2.3.2.jar</AuxClasspathEntry>
-  <AuxClasspathEntry>./lib/guava-28.1-jre.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/guava-33.0.0-jre.jar</AuxClasspathEntry>
   <AuxClasspathEntry>./lib/jogl-all-2.3.2.jar</AuxClasspathEntry>
-  <AuxClasspathEntry>./lib/logback-classic-1.1.2.jar</AuxClasspathEntry>
-  <AuxClasspathEntry>./lib/logback-core-1.1.2.jar</AuxClasspathEntry>
-  <AuxClasspathEntry>./lib/slf4j-api-1.7.28.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/logback-classic-1.4.14.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/logback-core-1.4.14.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/slf4j-api-2.0.9.jar</AuxClasspathEntry>
   <SrcDir>./src/main/java</SrcDir>
 </Project>
